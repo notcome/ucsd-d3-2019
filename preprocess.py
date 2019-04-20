@@ -29,7 +29,7 @@ def load_images(phase, index_range):
       image = torch.tensor(image)
       if image.shape[2] > 3:
         image = image[:, :, 0:3]
-      images.append(torch.tensor(image))
+      images.append(image)
     torch.save(images, IMG)
     return images
 
