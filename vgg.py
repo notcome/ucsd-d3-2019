@@ -30,10 +30,16 @@ datasets = {
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
+# for some reason the default_collate function causes a problem.
+def collate(batch):
+  images = torch.stack([x for x, _ in batch], 0)
+  labels = torch.stack([k for _, k in batch], 0)
+  return images, labels
+
 def train(use_pretrained = False):
   loaders = {
     x: DataLoader(datasets[x],
-      batch_size = batch_size, shuffle = True, num_workers = 4)
+      batch_size = batch_size, shuffle = True, collate_fn = collate)
     for x in ['train', 'val']
   }
 
@@ -59,9 +65,9 @@ def train(use_pretrained = False):
     # Each epoch has a training and validation phase
     for phase in ['train', 'val']:
       if phase == 'train':
-          model.train()  # Set model to training mode
+        model.train()  # Set model to training mode
       else:
-          model.eval()   # Set model to evaluate mode
+        model.eval()   # Set model to evaluate mode
 
       running_loss = 0.0
       running_corrects = 0
