@@ -26,6 +26,9 @@ def load_images(phase, index_range):
         print('%d images loaded.' % i)
       image_name = os.path.join('./data/images/', phase, str(i) + '.jpg')
       image = io.imread(image_name)
+      image = torch.tensor(image)
+      if image.shape[2] > 3:
+        image = image[:, :, 0:3]
       images.append(torch.tensor(image))
     torch.save(images, IMG)
     return images
@@ -42,15 +45,15 @@ class TrainingDataset(Dataset):
       toPIL,
       transforms.RandomResizedCrop(input_size),
       transforms.RandomHorizontalFlip(),
-      transforms.ToTensor()
+      transforms.ToTensor(),
+      transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
     ])
 
   def __len__(self):
     return len(train_images)
 
   def __getitem__(self, idx):
-    image = self.transform(train_images[idx])
-    return TF.normalize(image), labels[idx]
+    return self.transform(train_images[idx]), labels[idx]
 
 def transform_test_images(input_size):
   f = transforms.Compose([
