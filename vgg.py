@@ -43,11 +43,11 @@ def train(use_pretrained = False):
     for x in ['train', 'val']
   }
 
-  model = vgg11_bn()
+  model = vgg11_bn(use_pretrained)
   model.classifier[6] = nn.Linear(4096, num_classes)
   model = model.to(device)
 
-  optimizer = optim.Adam(model.parameters(), 1e-4)
+  optimizer = optim.Adam(model.parameters(), 1e-3)
 
   criterion = nn.CrossEntropyLoss()
 
@@ -100,13 +100,13 @@ def train(use_pretrained = False):
     epoch_loss = running_loss / len(loaders[phase].dataset)
     epoch_acc = running_corrects.double() / len(loaders[phase].dataset)
 
-  print('{} Loss: {:.4f} Acc: {:.4f}'.format(phase, epoch_loss, epoch_acc))
+    print('{} Loss: {:.4f} Acc: {:.4f}'.format(phase, epoch_loss, epoch_acc))
 
-  # deep copy the model
-  if phase == 'val' and epoch_acc > best_acc:
+    # deep copy the model
+    if phase == 'val' and epoch_acc > best_acc:
       best_acc = epoch_acc
       best_model_wts = copy.deepcopy(model.state_dict())
-  if phase == 'val':
+    if phase == 'val':
       val_acc_history.append(epoch_acc)
 
       print()
