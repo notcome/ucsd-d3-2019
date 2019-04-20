@@ -6,7 +6,7 @@ import torch.nn as nn
 import torch.optim as optim
 
 from torch.utils.data import DataLoader, random_split
-from torchvision.models import vgg11_bn
+from torchvision.models import vgg19_bn
 
 from preprocess import TrainingDataset, labels
 
@@ -43,11 +43,11 @@ def train(use_pretrained = False):
     for x in ['train', 'val']
   }
 
-  model = vgg11_bn(use_pretrained)
+  model = vgg19_bn(use_pretrained)
   model.classifier[6] = nn.Linear(4096, num_classes)
   model = model.to(device)
 
-  optimizer = optim.Adam(model.parameters(), 1e-3)
+  optimizer = optim.Adam(model.parameters(), 1e-4)
 
   criterion = nn.CrossEntropyLoss()
 
@@ -93,9 +93,9 @@ def train(use_pretrained = False):
               loss.backward()
               optimizer.step()
 
-      # statistics
-      running_loss += loss.item() * inputs.size(0)
-      running_corrects += torch.sum(preds == labels.data)
+        # statistics
+        running_loss += loss.item() * inputs.size(0)
+        running_corrects += torch.sum(preds == labels.data)
 
     epoch_loss = running_loss / len(loaders[phase].dataset)
     epoch_acc = running_corrects.double() / len(loaders[phase].dataset)
