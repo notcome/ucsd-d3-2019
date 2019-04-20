@@ -9,6 +9,7 @@ import torch
 
 from torch.utils.data import Dataset
 from torchvision import transforms
+import torchvision.transforms.functional as TF
 
 index  = simplejson.load(open('./data/train.json'))
 # shift to make it zero-indexed
@@ -41,15 +42,15 @@ class TrainingDataset(Dataset):
       toPIL,
       transforms.RandomResizedCrop(input_size),
       transforms.RandomHorizontalFlip(),
-      transforms.ToTensor(),
-      transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+      transforms.ToTensor()
     ])
 
   def __len__(self):
     return len(train_images)
 
   def __getitem__(self, idx):
-    return self.transform(train_images[idx]), labels[idx]
+    image = self.transform(train_images[idx])
+    return TF.normalize(image), labels[idx]
 
 def transform_test_images(input_size):
   f = transforms.Compose([
