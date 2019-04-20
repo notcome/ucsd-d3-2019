@@ -78,7 +78,6 @@ def train(use_pretrained = False):
         # track history if only in train
         with torch.set_grad_enabled(phase == 'train'):
           outputs = model(inputs)
-          print(outputs.shape, labels)
           loss = criterion(outputs, labels)
 
           _, preds = torch.max(outputs, 1)
