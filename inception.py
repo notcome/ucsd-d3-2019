@@ -10,7 +10,7 @@ from torchvision.models import inception_v3
 
 from preprocess import TrainingDataset, labels
 
-input_size = 224
+input_size = 299
 batch_size = 16
 num_epochs = 25
 
@@ -48,7 +48,7 @@ def train(use_pretrained = False):
   model.fc = nn.Linear(2048, num_classes)
   model = model.to(device)
 
-  optimizer = optim.Adam(model.parameters(), 1e-4)
+  optimizer = optim.Adam(model.parameters(), 1e-5)
 
   criterion = nn.CrossEntropyLoss()
 
@@ -124,4 +124,6 @@ def train(use_pretrained = False):
 
   # load best model weights
   model.load_state_dict(best_model_wts)
-  return model, val_acc_history
+  torch.save(model.state_dict(), './inception.torch')
+
+train(True)

@@ -90,8 +90,8 @@ def train(use_pretrained = False):
 
           # backward + optimize only if in training phase
           if phase == 'train':
-              loss.backward()
-              optimizer.step()
+            loss.backward()
+            optimizer.step()
 
         # statistics
         running_loss += loss.item() * inputs.size(0)
