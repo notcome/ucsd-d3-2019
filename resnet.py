@@ -44,7 +44,7 @@ def train(use_pretrained = False):
   }
 
   model = resnet152(use_pretrained)
-  model.fc = nn.Linear(512, num_classes)
+  model.fc = nn.Linear(2048, num_classes)
   model = model.to(device)
 
   optimizer = optim.Adam(model.parameters(), 1e-5)
